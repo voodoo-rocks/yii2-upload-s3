@@ -8,6 +8,9 @@
 
 namespace vr\upload;
 
+use Aws\Credentials\Credentials;
+use Aws\S3\S3Client;
+
 /**
  * Class S3Writer
  * @package vr\upload
@@ -22,7 +25,22 @@ class S3Writer extends Writer
     /**
      * @var
      */
-    public $secretAccessKey;
+    public $secretKey;
+
+    /**
+     * @var
+     */
+    public $bucket;
+
+    /**
+     * @var string
+     */
+    public $root = 'uploads';
+
+    /**
+     * @var string
+     */
+    public $region = 'eu-west-1';
 
     /**
      * @param $content
@@ -31,6 +49,26 @@ class S3Writer extends Writer
      */
     public function save($content)
     {
-        return true;
+        $client = new S3Client([
+            'credentials' => new Credentials($this->accessKeyId, $this->secretKey),
+            'region'      => $this->region,
+            'version'     => 'latest'
+        ]);
+
+        if ($this->root) {
+            $this->filename = $this->root . '/' . $this->filename;
+        }
+
+        $this->filename .= '.' . $this->determineExtension($content);
+
+        if (!$client->doesBucketExist($this->bucket)) {
+            $client->createBucket([
+                'Bucket' => $this->bucket
+            ]);
+        }
+
+        $client->upload($this->bucket, $this->filename, $content, 'public-read');
+
+        return $this->filename;
     }
 }
