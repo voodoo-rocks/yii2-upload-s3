@@ -67,7 +67,8 @@ class S3Writer extends Writer
             ]);
         }
 
-        $client->upload($this->bucket, $this->filename, $content, 'public-read');
+        // toDO: remove environment! It is a total crap but I had to do it (
+        $client->upload($this->bucket, \Yii::$app->get('environment')->activeFlavor . '/' . $this->filename, $content, 'public-read');
 
         return $this->filename;
     }
