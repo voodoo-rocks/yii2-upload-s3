@@ -65,9 +65,16 @@ class S3Writer extends Writer
             $client->createBucket([
                 'Bucket' => $this->bucket
             ]);
+
+            $client->waitUntil('BucketExists', ['Bucket' => $this->bucket]);
         }
 
-        // toDO: remove environment! It is a total crap but I had to do it (
+        // TODO: remove environment! It is a total crap but I had to do it (
+        $client->deleteObject([
+            'Bucket' => $this->bucket,
+            'Key'    => \Yii::$app->get('environment')->activeFlavor . '/' . $this->filename
+        ]);
+
         $client->upload($this->bucket, \Yii::$app->get('environment')->activeFlavor . '/' . $this->filename, $content, 'public-read');
 
         return $this->filename;
