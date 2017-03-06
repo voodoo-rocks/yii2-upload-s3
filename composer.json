@@ -15,12 +15,12 @@
 			"homepage": "http://voodoo.rocks"
 		}
 	],
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"require": {
 		"php": ">=5.4.0",
 		"yiisoft/yii2": "~2.0",
-		"voodoo-rocks/yii2-upload": "~3.0",
-		"aws/aws-sdk-php": "~3.19"
+		"voodoo-rocks/yii2-upload": "^3.0",
+		"aws/aws-sdk-php": "^3.23"
 	},
 	"autoload": {
 		"psr-0": {
