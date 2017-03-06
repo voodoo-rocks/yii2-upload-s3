@@ -69,7 +69,12 @@ class S3Writer extends Writer
             $client->waitUntil('BucketExists', ['Bucket' => $this->bucket]);
         }
 
-        $client->upload($this->bucket, \Yii::$app->get('environment')->activeFlavor . '/' . $this->filename, $content, 'public-read');
+        $env = \Yii::$app->get('env');
+        if (!$env) {
+            $env = \Yii::$app->get('environment');
+        }
+
+        $client->upload($this->bucket, $env->activeFlavor . '/' . $this->filename, $content, 'public-read');
 
         return $this->filename;
     }
